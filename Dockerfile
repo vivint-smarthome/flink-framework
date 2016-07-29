@@ -3,7 +3,7 @@ FROM mhart/alpine-node:6.3.0
 MAINTAINER tobilg@gmail.com
 
 # Set application name
-ENV APP_NAME mesos-framework-boilerplate
+ENV APP_NAME flink-framework
 
 # Set application directory
 ENV APP_DIR /usr/local/${APP_NAME}

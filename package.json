@@ -1,7 +1,7 @@
 {
-  "name": "mesos-framework-boilerplate",
+  "name": "flink-framework",
   "version": "0.1.0",
-  "description": "A boilerplate for developing Mesos frameworks with JavaScript",
+  "description": "An Apache Flink Mesos framework",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -9,27 +9,29 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/tobilg/mesos-framework-boilerplate.git"
+    "url": "https://github.com/mesoshq/flink-framework.git"
   },
   "keywords": [
     "mesos",
     "framework",
     "scheduler",
-    "boilerplate",
+    "flink",
     "mesosphere",
-    "dc/os",
+    "streaming",
+    "batch",
+    "distributed",
     "dcos"
   ],
   "author": "tobilg@gmail.com",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/tobilg/mesos-framework-boilerplate/issues"
+    "url": "https://github.com/mesoshq/flink-framework/issues"
   },
-  "homepage": "https://github.com/tobilg/mesos-framework-boilerplate",
+  "homepage": "https://github.com/mesoshq/flink-framework",
   "dependencies": {
     "express": "^4.14.0",
     "lodash": "^4.14.0",
-    "mesos-framework": "^0.2.7",
+    "mesos-framework": "^0.2.8",
     "require-environment-variables": "^1.1.2"
   }
 }

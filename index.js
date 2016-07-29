@@ -19,6 +19,8 @@ app.set("host", process.env.HOST || config.application.host);
 app.set("env", process.env.NODE_ENV || config.application.environment);
 app.set("logLevel", process.env.LOG_LEVEL || config.application.logLevel);
 app.set("zkUrl", process.env.ZK_URL);
+app.set("taskmanagerMem", process.env.TASKMANAGER_MEM || "1536");
+app.set("clusterName", process.env.CLUSTER_NAME || "");
 
 // Define static files path
 app.use(express.static("public"));
@@ -87,7 +89,7 @@ var frameworkTasks = {
                 new Mesos.Environment.Variable("flink_blob_storage_directory", "/data/blobs"),
                 new Mesos.Environment.Variable("flink_state_backend", "filesystem"),
                 new Mesos.Environment.Variable("flink_taskmanager_numberOfTaskSlots", "1"),
-                new Mesos.Environment.Variable("flink_taskmanager_heap_mb", "1536")
+                new Mesos.Environment.Variable("flink_taskmanager_heap_mb", app.get("taskmanagerMem"))
             ]), // Environment
             false, // Is shell?
             null, // Command
@@ -96,7 +98,7 @@ var frameworkTasks = {
         ),
         "resources": {
             "cpus": 0.5,
-            "mem": 1536,
+            "mem": parseInt(app.get("taskmanagerMem")),
             "ports": 3,
             "disk": 0
         },
@@ -109,10 +111,11 @@ var frameworkTasks = {
 var frameworkConfiguration = {
     "masterUrl": process.env.MASTER_IP || "leader.mesos",
     "port": 5050,
-    "frameworkName": "Mesos-Framework-Boilerplate",
+    "frameworkName": "Apache-Flink" + ((app.get("clusterName").length > 0 ? "." + app.get("clusterName").replace(/ /g, "-") : "")),
+    "frameworkFailoverTimeout": 20,
     "logging": {
         "path": path.join(__dirname , "/logs"),
-        "fileName": "mesos-framework-boilerplate.log",
+        "fileName": "flink-framework.log",
         "level": app.get("logLevel")
     },
     "tasks": frameworkTasks
@@ -132,6 +135,7 @@ scheduler.on("error", function (error) {
 
 // Wait for the framework scheduler to be subscribed to the leading Mesos Master
 scheduler.on("subscribed", function (obj) {
+    scheduler.logger.info(scheduler.options.frameworkFailoverTimeout);
     // Instantiate API (pass the scheduler and framework configuration)
     var api = require("./routes/api")(scheduler, frameworkConfiguration);
     // Create routes
