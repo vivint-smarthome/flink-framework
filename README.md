@@ -17,7 +17,7 @@ You can launch the scheduler like this:
 
 ```javascript
 {
-  "id": "/FlinkFramework",
+  "id": "/flink-framework",
   "container": {
     "docker": {
       "image": "mesoshq/flink-framework:0.1.1",
