@@ -24,6 +24,7 @@ RUN apk add --no-cache git && \
     npm set progress=false && \
     npm install --silent && \
     npm install bower -g && \
-    bower install --allow-root
+    bower install --allow-root && \
+    mkdir -p logs
 
 CMD ["npm", "start"]

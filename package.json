@@ -1,6 +1,6 @@
 {
   "name": "flink-framework",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "An Apache Flink Mesos framework",
   "main": "index.js",
   "scripts": {
