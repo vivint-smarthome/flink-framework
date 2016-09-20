@@ -35,7 +35,7 @@ var ContainerInfo = new Mesos.ContainerInfo(
     null, // Volumes
     null, // Hostname
     new Mesos.ContainerInfo.DockerInfo(
-        "mesoshq/flink:0.1.1", // Image
+        "mesoshq/flink:1.1.2", // Image
         Mesos.ContainerInfo.DockerInfo.Network.HOST, // Network
         null,  // PortMappings
         false, // Privileged
