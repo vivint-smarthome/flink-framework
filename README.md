@@ -20,7 +20,7 @@ You can launch the scheduler like this:
   "id": "/flink-framework",
   "container": {
     "docker": {
-      "image": "mesoshq/flink-framework:1.1.2",
+      "image": "mesoshq/flink-framework:1.1.3",
       "network": "HOST",
       "forcePullImage": true
     },

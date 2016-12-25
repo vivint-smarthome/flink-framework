@@ -35,7 +35,7 @@ var ContainerInfo = new Mesos.ContainerInfo(
     null, // Volumes
     null, // Hostname
     new Mesos.ContainerInfo.DockerInfo(
-        "mesoshq/flink:1.1.2", // Image
+        process.env.FLINK_DOCKER_IMAGE || "mesoshq/flink:1.1.3", // Image
         Mesos.ContainerInfo.DockerInfo.Network.HOST, // Network
         null,  // PortMappings
         false, // Privileged
@@ -112,7 +112,9 @@ var frameworkConfiguration = {
     "masterUrl": process.env.MASTER_IP || "leader.mesos",
     "port": 5050,
     "frameworkName": "Apache-Flink" + ((app.get("clusterName").length > 0 ? "." + app.get("clusterName").replace(/ /g, "-") : "")),
-    "frameworkFailoverTimeout": 20,
+    "frameworkFailoverTimeout": 300, // Mesos will kill the framework's tasks after 5min when the scheduler disconnects
+    "useZk": true,
+    "zkUrl": "master.mesos:2181",
     "logging": {
         "path": path.join(__dirname , "/logs"),
         "fileName": "flink-framework.log",
@@ -121,11 +123,8 @@ var frameworkConfiguration = {
     "tasks": frameworkTasks
 };
 
+// Instantiate the framework scheduler
 var scheduler = new Scheduler(frameworkConfiguration);
-
-// Start framework scheduler
-scheduler.subscribe();
-scheduler.logger.info("Subscribed to Mesos Master!");
 
 // Capture "error" events
 scheduler.on("error", function (error) {
@@ -142,16 +141,22 @@ scheduler.on("subscribed", function (obj) {
     app.use("/api/" + config.application.apiVersion, api);
 });
 
-
-// /health endpoint for Marathon health checks
-app.get("/health", function(req, res) {
-    res.send("OK");
+// Capture "ready" event -> Scheduler successfully subscribed to the Mesos Master
+scheduler.on("ready", function () {
+    // Start framework scheduler
+    scheduler.subscribe();
+    scheduler.logger.info("Subscribed to Mesos Master!");
+    // /health endpoint for Marathon health checks
+    app.get("/health", function(req, res) {
+        res.send("OK");
+    });
+    // Start Express.js server
+    var server = app.listen(app.get("port"), app.get("host"), function() {
+        scheduler.logger.info("Express server listening on port " + server.address().port + " on " + server.address().address);
+    });
 });
 
-var server = app.listen(app.get("port"), app.get("host"), function() {
-    scheduler.logger.info("Express server listening on port " + server.address().port + " on " + server.address().address);
-});
-
+// Catch uncaught exceptions
 process.on("uncaughtException", function (error) {
     scheduler.logger.error("Caught exception: ");
     scheduler.logger.error(error.stack);
