@@ -18,7 +18,7 @@ app.set("port", process.env.PORT0 || config.application.port);
 app.set("host", process.env.HOST || config.application.host);
 app.set("env", process.env.NODE_ENV || config.application.environment);
 app.set("logLevel", process.env.LOG_LEVEL || config.application.logLevel);
-app.set("zkUrl", process.env.ZK_URL);
+app.set("zkUrl", process.env.ZK_URL || "master.mesos:2181");
 app.set("taskmanagerMem", process.env.TASKMANAGER_MEM || "1536");
 app.set("clusterName", process.env.CLUSTER_NAME || "");
 
@@ -114,7 +114,7 @@ var frameworkConfiguration = {
     "frameworkName": "Apache-Flink" + ((app.get("clusterName").length > 0 ? "." + app.get("clusterName").replace(/ /g, "-") : "")),
     "frameworkFailoverTimeout": 300, // Mesos will kill the framework's tasks after 5min when the scheduler disconnects
     "useZk": true,
-    "zkUrl": "master.mesos:2181",
+    "zkUrl": app.get("zkUrl"),
     "logging": {
         "path": path.join(__dirname , "/logs"),
         "fileName": "flink-framework.log",

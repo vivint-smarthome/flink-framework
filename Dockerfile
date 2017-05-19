@@ -1,4 +1,4 @@
-FROM mhart/alpine-node:6
+FROM node:6-alpine
 
 MAINTAINER tobilg@gmail.com
 
@@ -18,8 +18,7 @@ ADD . ${APP_DIR}
 WORKDIR ${APP_DIR}
 
 # Setup of the application
-RUN apk add --no-cache git && \
-    rm -rf ${APP_DIR}/node_modules && \
+RUN apk -U add --no-cache git && \
     rm -rf ${APP_DIR}/public/bower_components && \
     npm set progress=false && \
     npm install --silent && \

@@ -1,0 +1,4 @@
+.git*
+.bowerrc
+node_modules
+Dockerfile
